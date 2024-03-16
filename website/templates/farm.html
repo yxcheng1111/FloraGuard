@@ -1,0 +1,387 @@
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10.0.4/swiper-bundle.min.css">
+    <style>
+        .section .container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+        }
+        .section .container .btn{
+            width: 10%;
+            height: 40px;
+            background: white;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .section .container .btn:hover{
+            background: #265DF2;
+            color: white;
+        }
+        .slide-container{
+            width: 100%;
+            padding: 40px 0;
+        }
+        .slide-content{
+            margin: 0 40px;
+            overflow: hidden;
+            border-radius: 25px;
+        }
+        .card{
+            background-color: #FFF;
+        }
+        .image-content,
+        .card-content{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 14px;
+            height: fit-content;
+        }
+        .image-content{
+            position: relative;
+            row-gap: 5px;
+            padding: 25px 0;
+        }
+        .overlay{
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background-color: black;
+            border-radius: 25px 25px 0 25px;
+        }
+        .overlay::before,
+        .overlay::after{
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: -40px;
+            height: 40px;
+            width: 40px;
+            background-color: black;
+        }
+        .overlay::after{
+            border-radius: 0 25px 0 0;
+            background-color: #FFF;
+        }
+        .card-image{
+            position: relative;
+            height: fit-content;
+            width: 90%;
+            background: #FFF;
+            border-radius: 25px;
+            padding: 3px;
+        }
+        .card-image .card-img{
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 25px;
+        }
+        
+        .button{
+            width: 100%;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            padding: 8px 16px;
+            background-color: black;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .button:hover{
+            background: #265DF2;
+        }
+        .swiper-navBtn{
+            color: gray;
+            transition: color 0.3s ease;
+        }
+        .swiper-navBtn:hover{
+            color: white;
+        }
+        .swiper-navBtn::before,
+        .swiper-navBtn::after{
+            font-size: 35px;
+        }
+        .swiper-button-next{
+            right: 0;
+        }
+        .swiper-button-prev{
+            left: 0;
+        }
+        .swiper-pagination-bullet{
+            background-color: gray;
+            opacity: 1;
+        }
+        .swiper-pagination-bullet-active{
+            background-color: white;
+        }
+        @media screen and (max-width: 768px) {
+            .slide-content{
+                margin: 0 10px;
+            }
+            .swiper-navBtn{
+                display: none;
+            }
+        }
+        .box{
+            height: 30px;
+            display: flex;
+            cursor: pointer;
+            padding: 10px 20px;
+            background: #FFF;
+            border-radius: 25px;
+            align-items: center;
+            position: absolute;
+            right: 40px;
+            z-index: 999; 
+        }
+        .box:hover input,
+        .box input:focus,
+        .box input:not(:placeholder-shown) {
+            width: 200px;
+        }
+        .box input{
+            width: 0;
+            outline: none;
+            border: none;
+            font-weight: 500;
+            transition: 0.8s;
+            background: transparent;
+        }
+        .box a ion-icon{
+            color: black;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+{% extends "base.html" %} {% block title %}Farm{% endblock %} 
+{% block content %}
+<div class="container-fluid" style="position: relative;">
+    <div style="text-align: center; color: white;">
+        <h1>Manage Farm</h1>
+    </div>
+</div>
+
+<form method="post">
+    <div class="box">
+        <input type="hidden" name="action" value="search">
+        <input type="text" id="search" placeholder="Search" autocomplete="off" name="query">
+        <button type="submit" class="btn" style="padding: 0px; width: 20px; height: 20px;">
+            <ion-icon name="search-outline"></ion-icon>
+        </button>
+    </div>
+</form>
+
+{% if farm %}
+<div class="slide-container swiper" style="height: fit-content;">
+    <div class="slide-content">
+        <div class="card-wrapper swiper-wrapper">
+            {% for item in farm %}
+            <div class="card swiper-slide" style="border-radius: 25px;">
+                <div class="image-content">
+                    <span class="overlay"></span>
+                    <div class="card-image">
+                        <img align="center" src="{{ url_for('static', filename='farm.jpeg') }}" class="card-img">
+                    </div>
+                </div>
+                <div class="card-content">
+                    <h2 class="name">{{item.name}}</h2>
+                    <table class="table table-borderless">
+                        <tr>
+                            <th scope="row" style="width: 80px;">State:</th>
+                            <td style="text-align: left;">{{item.state}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">City:</th>
+                            <td style="text-align: left;">{{item.city}}</td>
+                        </tr>
+                    </table>
+                    <div class="row" style="width:100%">
+                        <div class="col">
+                            <form method="post">
+                                <input type="hidden" name="farm_id" value="{{item.id}}">
+                                <input type="hidden" name="action" value="delete">
+                                <button type="submit" class="button position-relative">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="swiper-button-next swiper-navBtn"></div>
+    <div class="swiper-button-prev swiper-navBtn"></div>
+    <div class="swiper-pagination"></div>
+</div>
+{% endif %}
+
+<div class="container">
+    <button class="btn" type="button" data-bs-toggle="modal" data-bs-target="#add">Add Farm</button>
+</div>   
+
+<form method="post" onsubmit="return validateForm()" id="form_add">
+    <input type="hidden" name="action" value="add">
+    <div class="modal fade" id="add" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Farm</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="farm" class="col-form-label" style="font-weight: 600;">Farm Name:</label>
+                    <input type="text" class="form-control" id="farm" name="farm" required autocomplete="off">
+                </div>
+                <div class="mb-3">
+                    <label for="state" class="col-form-label" style="font-weight: 600;">State:</label>
+                    <select class="form-select" id="state" required onchange="updateCityDropdownadd()" name="state">
+                        <option disabled selected>Select State</option>
+                        <option value="Kuala Lumpur">Kuala Lumpur</option>
+                        <option value="Putrajaya">Putrajaya</option>
+                        <option value="Labuan">Labuan</option>
+                        <option value="Selangor">Selangor</option>
+                        <option value="Penang">Penang</option>
+                        <option value="Johor">Johor</option>
+                        <option value="Perak">Perak</option>
+                        <option value="Negeri Sembilan">Negeri Sembilan</option>
+                        <option value="Pahang">Pahang</option>
+                        <option value="Kedah">Kedah</option>
+                        <option value="Sabah">Sabah</option>
+                        <option value="Kelantan">Kelantan</option>
+                        <option value="Terengganu">Terengganu</option>
+                        <option value="Malacca">Malacca</option>
+                        <option value="Perlis">Perlis</option>
+                        <option value="Sarawak">Sarawak</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="city" class="col-form-label" style="font-weight: 600;">City:</label>
+                    <select class="form-select" id="city" required name="city">
+                        <option disabled selected>Select City</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="resetForm('form_add')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+<script>
+    var swiper = new Swiper(".slide-content", {
+        slidesPerView: 5,
+        spaceBetween: 25,
+        loop: false,
+        centerSlide: 'true',
+        fade: 'true',
+        grabCursor: 'true',
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+            dynamicBullets: true,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+
+        breakpoints: {
+            0: {
+                slidesPerView: 1,
+            },
+            520: {
+                slidesPerView: 2,
+            },
+            768: {
+                slidesPerView: 3,
+            },
+            1024: {
+                slidesPerView: 4,
+            }
+            
+        },
+    });
+
+    function validateForm() {
+        var stateSelect = document.getElementById("state");
+        var citySelect = document.getElementById("city");
+
+        if (stateSelect.value === 'Select State' || citySelect.value === 'Select City') {
+            alert("Please select both State and City.");
+            return false; 
+        }
+
+        return true; 
+    }
+
+    function updateCityDropdownadd() {
+        var stateSelect = document.getElementById("state");
+        var citySelect = document.getElementById("city");
+
+        citySelect.innerHTML = '<option disabled selected>Select City</option>';
+
+        var cities = {};
+        cities["Kuala Lumpur"] = ["Kuala Lumpur", "Rawang", "Kepong"];
+        cities["Putrajaya"] = ["Putrajaya"];
+        cities["Labuan"] = ["Labuan"];
+        cities["Selangor"] = ["Klang", "Banting", "Petaling Jaya", "Shah Alam", "Kuala Selangor", "Sabak Bernam", "Sepang", "Semenyih", "Beranang"];
+        cities["Penang"] = ['Permatang Damar Laut', 'Butterworth', 'George Town', 'Bukit Mertajam', 'Perai'];
+        cities["Johor"] = ['Johor Bahru', 'Kampung Pasir Gudang Baru', 'Muar', 'Kluang', 'Batu Pahat', 'Kota Tinggi', 'Kulai', 'Mersing', 'Pontian Kechil', 'Segamat', 'Tangkak'];
+        cities["Perak"] = ['Ipoh', 'Batu Gajah', 'Teluk Intan', 'Bagan Serai', 'Kampar', 'Kuala Kangsar', 'Seri Manjung', 'Pantai Remis'];
+        cities["Negeri Sembilan"] = ["Kuala Pilah", "Port Dickson", "Rembau", "Seremban", "Tampin"];
+        cities["Pahang"] = ['Kuantan', 'Raub', 'Cameron Highlands', 'Kuala Lipis', 'Bentong', 'Jerantut', 'Kuala Lipis', 'Maran', 'Pekan', 'Rompin', 'Temerloh'];
+        cities["Kedah"] = ['Sungai Petani', 'Alor Setar', 'Kuah', 'Bandar Baharu', 'Kuala Muda', 'Kulim', 'Pendang', 'Pokok Sena', 'Yan'];
+        cities["Sabah"] = ['Kota Kinabalu', 'Sandakan', 'Tawau', 'Beaufort', 'Keningau', 'Membakut', 'Kudat', 'Lahad Datu', 'Semporna', 'Kota Belud', 'Papar', 'Penampang', 'Putatan', 'Ranau'];
+        cities["Kelantan"] = ['Bachok', 'Gua Musang', 'Kota Bharu', 'Machang', 'Pasir Mas', 'Pasir Puteh', 'Tanah Merah', 'Tumpat'];
+        cities["Terengganu"] = ["Cukai", "Kemaman", "Kuala Terengganu", "Marang"];
+        cities["Malacca"] = ["Alor Gajah", "Jasin", "Malacca"];
+        cities["Perlis"] = ["Kangar"];
+        cities["Sarawak"] = ['Kuching', 'Miri', 'Sarikei', 'Bintulu', 'Betong', 'Kapit', 'Limbang', 'Siburan', 'Sibu', 'Selangau', 'Sri Aman'];
+
+
+        var selectedState = stateSelect.value;
+        if (cities[selectedState]) {
+            for (var i = 0; i < cities[selectedState].length; i++) {
+                var option = document.createElement("option");
+                option.value = cities[selectedState][i];
+                option.text = cities[selectedState][i];
+                citySelect.add(option);
+            }
+        }
+    }
+    
+    function resetForm(formId) {
+        var form = document.getElementById(formId);
+        if (form) {
+            form.reset();
+
+            var citySelect = form.querySelector("#city");
+            if (citySelect) {
+                citySelect.innerHTML = '<option disabled selected>Select City</option>';
+            }
+
+            document.getElementById("flashMessage").style.display = 'none';
+        }
+    }      
+</script>
+
+{% endblock %}

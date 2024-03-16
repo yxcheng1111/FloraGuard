@@ -1,0 +1,151 @@
+<head>
+  <style>
+  .form-box-reg .icon-close{
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 45px;
+        height: 45px;
+        background: white;
+        font-size: 2em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-bottom-left-radius: 20px;
+        cursor: pointer;
+        z-index: 1;
+    }
+    .form-box-reg{
+        position: relative;
+        padding: 50px;
+        background: transparent;
+        border: 2px solid rgba(255,255,255,0.5);
+        border-radius: 20px;
+        backdrop-filter:blur(15px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        transition: transform .5s ease, height .2s ease;
+        margin-top: 15vh;
+    }
+
+    .form-value h2{
+        font-size: 2em;
+        color: white;
+        text-align: center;
+    }
+    .inputbox{
+        position: relative;
+        margin: 30px 0;
+        width: 310px;
+        border-bottom: 2px solid white;
+    }
+    .inputbox label{
+        position: absolute;
+        top: 50%;
+        left: 5px;
+        transform: translateY(-50%);
+        color: white;
+        font-size: 1em;
+        pointer-events: none;
+        transition: .5s;
+    }
+    input:focus ~ label,
+    input:valid ~ label{
+        top: -5px;
+    }
+    .inputbox input{
+        width: 100%;
+        height: 50px;
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 1em;
+        padding: 0 35px 0 5px;
+        color: white;
+    }
+    .inputbox ion-icon{
+        position: absolute;
+        right: 8px;
+        color: white;
+        font-size: 1.2em;
+        top: 15px;
+    }
+    .section .form-box-reg .form-value .btn{
+        width: 100%;
+        height: 40px;
+        background: white;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        font-size: 1em;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    .section .form-box-reg .form-value .btn:hover{
+        background: #265DF2;
+        color: white;
+    }
+    .login{
+        font-size: .9em;
+        color: white;
+        text-align: center;
+        margin-top: 25px;
+    }
+    .login p a{
+        text-decoration: none;
+        color: white;
+        font-weight: 600;
+    }
+    .login p a:hover{
+        text-decoration: underline;
+
+    }
+    .section{
+        display: flex;
+        flex-grow: 1;
+        justify-content: center;
+        align-items: center;
+    }
+  </style>
+</head>
+{% extends "base.html" %} {% block title %}Sign Up{% endblock %} 
+{% block content %}
+<div class="form-box-reg">
+<span class="icon-close">
+    <ion-icon name="close"></ion-icon>
+</span>
+<div class="form-value">
+    <form method="POST">
+    <h2>Sign Up</h2>
+    <div class="inputbox">
+        <ion-icon name="mail-outline"></ion-icon>
+        <input type="text" required name="email" size="20" autocomplete="off">
+        <label style="font-weight: bold;" for="">Email Address</label>
+    </div>
+    <div class="inputbox">
+        <ion-icon name="call-outline"></ion-icon>
+        <input type="text" required name="phoneNo" size="20" autocomplete="off" id="phoneNo">
+        <label style="font-weight: bold;" for="phoneNo">Phone Number</label>
+    </div>
+    <div class="inputbox">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        <input type="password" required name="password1" size="20" autocomplete="off" id="password1">
+        <label style="font-weight: bold;" for="password1">Password</label>
+    </div>
+    <div class="inputbox">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        <input type="password" required name="password2" size="20" autocomplete="off" id="password2">
+        <label style="font-weight: bold;" for="password2">Password (Confirm)</label>
+    </div>
+
+    <button class="btn" type="submit" style="border-radius: 10px;">Sign Up</button>
+    <div class="login">
+        <p>Already have an account? <a href="/login">Login</a></p>
+    </div>
+    </form>
+</div>
+</div>
+
+{% endblock %}

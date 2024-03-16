@@ -1,0 +1,258 @@
+<head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10.0.4/swiper-bundle.min.css">
+    <style>
+        .slide-container{
+            width: 100%;
+            padding: 40px 0;
+        }
+        .slide-content{
+            margin: 0 40px;
+            overflow: hidden;
+            border-radius: 25px;
+        }
+        .card{
+            background-color: #FFF;
+        }
+        .image-content,
+        .card-content{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px 14px;
+            height: fit-content;
+        }
+        .image-content{
+            position: relative;
+            row-gap: 5px;
+            padding: 25px 0;
+        }
+        .overlay{
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background-color: black;
+            border-radius: 25px 25px 0 25px;
+        }
+        .overlay::before,
+        .overlay::after{
+            content: '';
+            position: absolute;
+            right: 0;
+            bottom: -40px;
+            height: 40px;
+            width: 40px;
+            background-color: black;
+        }
+        .overlay::after{
+            border-radius: 0 25px 0 0;
+            background-color: #FFF;
+        }
+        .card-image{
+            position: relative;
+            height: fit-content;
+            width: 90%;
+            background: #FFF;
+            border-radius: 25px;
+            padding: 3px;
+        }
+        .card-image .card-img{
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 25px;
+        }
+        
+        .button{
+            width: 100%;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            padding: 8px 16px;
+            background-color: black;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .button:hover{
+            background: #265DF2;
+        }
+        .swiper-navBtn{
+            color: gray;
+            transition: color 0.3s ease;
+        }
+        .swiper-navBtn:hover{
+            color: white;
+        }
+        .swiper-navBtn::before,
+        .swiper-navBtn::after{
+            font-size: 35px;
+        }
+        .swiper-button-next{
+            right: 0;
+        }
+        .swiper-button-prev{
+            left: 0;
+        }
+        .swiper-pagination-bullet{
+            background-color: gray;
+            opacity: 1;
+        }
+        .swiper-pagination-bullet-active{
+            background-color: white;
+        }
+        @media screen and (max-width: 768px) {
+            .slide-content{
+                margin: 0 10px;
+            }
+            .swiper-navBtn{
+                display: none;
+            }
+        }
+        .box{
+            height: 30px;
+            display: flex;
+            cursor: pointer;
+            padding: 10px 20px;
+            background: #FFF;
+            border-radius: 25px;
+            align-items: center;
+            position: absolute;
+            right: 40px;
+            z-index: 999; 
+        }
+        .box:hover input,
+        .box input:focus,
+        .box input:not(:placeholder-shown) {
+            width: 200px;
+        }
+        .box input{
+            width: 0;
+            outline: none;
+            border: none;
+            font-weight: 500;
+            transition: 0.8s;
+            background: transparent;
+        }
+        .box a ion-icon{
+            color: black;
+            font-size: 18px;
+        }
+    </style>
+</head>
+{% extends "base.html" %} {% block title %}History{% endblock %} 
+{% block content %}
+<div class="container-fluid" style="position: relative;">
+    <div style="text-align: center; color: white;">
+        <h1>Detection History</h1>
+    </div>
+</div>
+<form method="post">
+    <div class="box">
+        <input type="text" id="search" placeholder="Search" autocomplete="off" name="query">
+        <button type="submit" class="btn" style="padding: 0px; width: 20px; height: 20px;">
+            <ion-icon name="search-outline"></ion-icon>
+        </button>
+    </div>
+</form>
+{% if history %}
+<div class="slide-container swiper" style="height: fit-content;">
+    <div class="slide-content">
+        <div class="card-wrapper swiper-wrapper">
+            {% for item in history %}
+            {% set index = loop.index0 %}
+            <div class="card swiper-slide" style="border-radius: 25px;">
+                <div class="image-content">
+                    <span class="overlay"></span>
+                    <div class="card-image">
+                        <img align="center" src="data:image/jpeg;base64, {{ img[index] }}" alt="Predicted Result" class="card-img">
+                    </div>
+                </div>
+                <div class="card-content">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th scope="row" style="width: 80px;">Class Name:</th>
+                            <td style="text-align: left;">{{item.label}}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Detection Date:</th>
+                            <td style="text-align: left;">{{item.date}}</td>
+                        </tr>
+                    </table>
+                    <div class="row" style="width:100%">
+                        <div class="col">
+                            <button type="button" class="button position-relative" onclick="window.open('/{{item.id}}', '_blank')">
+                                Show Result
+                            </button>
+                        </div>
+                        <div class="col">
+                            <button type="button" class="button position-relative" onclick="downloadResult('{{ img[index] }}')">
+                                Download Result
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="swiper-button-next swiper-navBtn"></div>
+    <div class="swiper-button-prev swiper-navBtn"></div>
+    <div class="swiper-pagination"></div>
+</div>
+{% else %}
+<div style="text-align: center; color: white; padding: 150px">
+    <h2>There are no record currently!</h2>
+</div>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script>
+    var swiper = new Swiper(".slide-content", {
+        slidesPerView: 4,
+        spaceBetween: 25,
+        loop: false,
+        centerSlide: 'true',
+        fade: 'true',
+        grabCursor: 'true',
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+            dynamicBullets: true,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+
+        breakpoints: {
+            0: {
+                slidesPerView: 1,
+            },
+            520: {
+                slidesPerView: 2,
+            },
+            768: {
+                slidesPerView: 3,
+            },
+            1024: {
+                slidesPerView: 4,
+            }
+            
+        },
+    });
+    function downloadResult(base64Image) {
+        var dataURL = 'data:image/jpeg;base64,' + base64Image;
+
+        var a = document.createElement('a');
+        a.href = dataURL;
+        a.download = 'result_image.jpg';
+
+        a.click();
+
+        document.body.removeChild(a);
+    }
+</script>
+{% endblock %}
